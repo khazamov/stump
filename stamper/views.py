@@ -12,6 +12,39 @@ from pyuploadcare.api_resources import File
 import pdb
 from .models import WebhookLog
 
+
+def copy_to_azure(file_uuid):
+  try: 
+    CDN_BASE="https://ucarecdn.com/"
+    file_url = CDN_BASE + file_uuid + '/'
+    block_blob_service = BlockBlobService(account_name='uploadcaretest', 
+    account_key='SGpgQ8GVi6NETpZSFAkqtWacLUim5Fdsw7z2cu8Kk6Esm4cwAJwvy705tNohArQPjbVkW6wXwzXekW5U22fzWg==')
+    block_blob_service.create_container('image_container')
+    block_blob_service.set_container_acl('image_container', public_access=PublicAccess.Container)
+    filename = wget.download(file_url)
+    block_blob_service.create_blob_from_path('image_container',   uuid,   'filename', content_settings=ContentSettings(content_type='image/png'))
+  except Exception, e:
+         print (e.message);
+  else:
+        pass
+  finally:
+        pass
+
+  
+def copy_to_s3(file_uuid):
+  try:
+    # do additional processing,i.e add certain effects
+    print("Copying to S3 file uuid" + file_uuid)
+    file = File(file_uuid);
+    file.copy(None, 'bucner123', 'true');
+  except Exception, e:
+         print (e.message);
+  else:
+        pass
+  finally:
+        pass
+
+
 @csrf_exempt
 @require_POST
 def webhook(request):
@@ -30,11 +63,9 @@ def webhook(request):
         request_meta=json.dumps(meta),
         is_image = data['data']['is_image']
     )
+    
+    #copy_to_s3(data['data']['uuid'])
 
-
-    file_uuid = data['data']['uuid'];
-    file = File(file_uuid);
-    file.copy(None, 'bucner123', 'true');
     return HttpResponse(status=200)
        
   except Exception, e:

@@ -27,10 +27,20 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
+BROKER_URL = "amqp://myuser:mypassword@localhost:5672/myvhost"
 # Application definition
+	
+CELERY_ACCEPT_CONTENT = ['json']
+
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_IMPORTS = ('stamper.tasks',)
+CELERY_TIMEZONE = 'Europe/Moscow'
 
 INSTALLED_APPS = [
+   'django_celery_beat',
+   'django_celery_results',
   'pyuploadcare.dj',
      'stamper',
     'django.contrib.admin',
@@ -55,9 +65,11 @@ MIDDLEWARE_CLASSES = [
 ROOT_URLCONF = 'stump.urls'
 
 UPLOADCARE = {
-    'pub_key': '',
+    'pub_key': '6b60526ff7a7947f3b4d',
     'secret': '',
 }
+
+
 
 TEMPLATES = [
     {
@@ -74,7 +86,6 @@ TEMPLATES = [
         },
     },
 ]
-
 
 WSGI_APPLICATION = 'stump.wsgi.application'
 
